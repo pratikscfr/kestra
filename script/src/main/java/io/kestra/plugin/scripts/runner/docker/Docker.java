@@ -765,14 +765,9 @@ public class Docker extends TaskRunner<Docker.DockerTaskRunnerDetailResult> {
         }
 
         if (this.getCpu() != null && this.getCpu().getCpus() != null) {
-            String cpusString = runContext.render(this.getCpu().getCpus()).as(String.class).orElse(null);
-            if (cpusString != null && !cpusString.isEmpty()) {
-                try {
-                    Double cpus = Double.parseDouble(cpusString);
-                    hostConfig.withNanoCPUs((long) (cpus * 1_000_000_000L));
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid value for cpus: " + cpusString, e);
-                }
+            Double cpus = runContext.render(this.getCpu().getCpus()).as(Double.class).orElse(null);
+            if (cpus != null) {
+                hostConfig.withNanoCPUs((long) (cpus * 1_000_000_000L));
             }
         }
 
